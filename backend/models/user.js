@@ -31,6 +31,10 @@ const Users = db.define(
             type: DataTypes.STRING,
             allowNull: true,
         },
+        room: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
     },
     {
         freezeTableName: true, //opsi tambahan agar nama table pada DB sama dengan model
