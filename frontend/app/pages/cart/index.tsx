@@ -9,6 +9,7 @@ import {
     Button,
     TextInput,
     StatusBar,
+    Platform,
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { GopayLogo } from "@/app/inventory/icons";
@@ -116,8 +117,13 @@ const Cart: React.FC<props> = ({ navigation }) => {
         const response = await fetch(`http://192.168.27.12:5000/user/${id}`);
         const user = await response.json();
         // console.log("login",user);
-        setUser(user.role!!);
-        setUsername(user.username);
+        if (user != null) {
+            setUser(user.role);
+            setUsername(user.username);
+        } else {
+            setUser("");
+            setUsername("");
+        }
     };
 
     const logOut = async () => {
@@ -236,7 +242,7 @@ const Cart: React.FC<props> = ({ navigation }) => {
         });
 
         if (!result.canceled) {
-            // setImage(result.assets[0].uri);
+            setImage(result.assets[0].uri);
             uploadToCloudinary(result.assets[0].uri);
         }
     };
@@ -355,10 +361,9 @@ const Cart: React.FC<props> = ({ navigation }) => {
                         gap: 10,
                         alignItems: "center",
                         paddingTop: 10,
-                        justifyContent: "space-between"
+                        justifyContent: "space-between",
                     }}
                 >
-                    
                     <Text style={{ fontWeight: "500", fontSize: 20 }}>
                         Cart User Page
                     </Text>
@@ -432,13 +437,13 @@ const Cart: React.FC<props> = ({ navigation }) => {
                 <View style={styles.summary}>
                     <TextInput
                         style={styles.textArea}
-                        placeholder="Catatan Tambahan"
+                        placeholder="Note Plus"
                         onChangeText={(text) => setCatatan(text)}
                         multiline={true}
                         numberOfLines={4}
                     />
 
-                    <TextInput
+                    {/* <TextInput
                         style={{
                             borderWidth: 1,
                             borderColor: "gray",
@@ -448,7 +453,7 @@ const Cart: React.FC<props> = ({ navigation }) => {
                         keyboardType="number-pad"
                         placeholder="Cash"
                         onChangeText={(text) => setCash(Number(text))}
-                    />
+                    /> */}
 
                     <View style={styles.summaryRow}>
                         <Text style={styles.totalLabel}>Total</Text>
@@ -462,11 +467,15 @@ const Cart: React.FC<props> = ({ navigation }) => {
                 <Text style={styles.paymentLabel}>Payment</Text>
                 <View style={styles.paymentMethods}>
                     <Text style={{ alignSelf: "center" }}>Gopay</Text>
-                    <Text style={{ alignSelf: "center" }}>: +62 877-3818-2043</Text>
+                    <Text style={{ alignSelf: "center" }}>
+                        : +62 877-3818-2043
+                    </Text>
                 </View>
                 <View style={styles.paymentMethods}>
                     <Text style={{ alignSelf: "center" }}>Dana</Text>
-                    <Text style={{ alignSelf: "center" }}>: +62 877-3818-2043</Text>
+                    <Text style={{ alignSelf: "center" }}>
+                        : +62 877-3818-2043
+                    </Text>
                 </View>
 
                 <TouchableOpacity
@@ -476,6 +485,16 @@ const Cart: React.FC<props> = ({ navigation }) => {
                     <Ionicons name="camera-outline" size={24} color="white" />
                     <Text style={{ color: "#fff" }}>Proof Of Payment</Text>
                 </TouchableOpacity>
+
+                {image?.length > 0 ? (
+                    <Image
+                        resizeMode="cover"
+                        style={styles.img}
+                        src={image}
+                    />
+                ) : (
+                    ""
+                )}
 
                 {/* Buy Button */}
                 <TouchableOpacity
@@ -499,6 +518,13 @@ const Cart: React.FC<props> = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+    img: {
+        width: 300,
+        height: 600,
+        marginHorizontal: "auto",
+        borderRadius: 8,
+        elevation: 5,
+    },
     textArea: {
         width: "100%",
         height: 100,
@@ -515,7 +541,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         borderRadius: 9,
         color: "#fff",
-        marginTop: 20
+        marginTop: 20,
     },
     container: {
         paddingHorizontal: 20,

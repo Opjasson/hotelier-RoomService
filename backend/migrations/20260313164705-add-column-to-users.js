@@ -15,7 +15,7 @@ module.exports = {
             {
                 type: Sequelize.INTEGER,
                 allowNull: true, // atau false sesuai kebutuhan
-            }
+            },
         );
     },
 
@@ -26,5 +26,6 @@ module.exports = {
          * Example:
          * await queryInterface.dropTable('users');
          */
+        await queryInterface.removeColumn('users', 'room');
     },
 };

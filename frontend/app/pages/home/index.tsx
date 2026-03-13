@@ -59,6 +59,7 @@ const Home: React.FC<props> = ({ navigation }) => {
     const [idLogin, setIdLogin] = useState<number>();
     const [user, setUser] = useState<string>();
     const [username, setUsername] = useState<string>();
+    const [room, setRoom] = useState<string>();
     const [transaksiId, setTransaksiId] = useState<number>();
     const [dataTransaksi, setDataTransaksi] = useState<
         {
@@ -86,8 +87,15 @@ const Home: React.FC<props> = ({ navigation }) => {
         const response = await fetch(`http://192.168.27.12:5000/user/${id}`);
         const user = await response.json();
         // console.log("login",user);
-        setUser(user.role);
-        setUsername(user.username);
+        if (user != null) {
+            setUser(user.role);
+            setUsername(user.username);
+            setRoom(user.email);
+        } else {
+            setUser("");
+            setUsername("");
+            setRoom("");
+        }
     };
 
     const logOut = async () => {
@@ -248,11 +256,11 @@ const Home: React.FC<props> = ({ navigation }) => {
                             </Text>
                         </View>
                         <Ionicons
-                        name="menu"
-                        size={30}
-                        color="black"
-                        onPress={() => toggleOpen()}
-                    />
+                            name="menu"
+                            size={30}
+                            color="black"
+                            onPress={() => toggleOpen()}
+                        />
                     </View>
 
                     <Text
@@ -263,7 +271,7 @@ const Home: React.FC<props> = ({ navigation }) => {
                             alignItems: "center",
                         }}
                     >
-                        Room :
+                        Room : {room}
                     </Text>
                 </View>
                 {/* Top menu */}

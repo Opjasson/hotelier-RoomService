@@ -98,8 +98,13 @@ const DetailProduct: React.FC<props> = ({ navigation, route }) => {
         const response = await fetch(`http://192.168.27.12:5000/user/${id}`);
         const user = await response.json();
         // console.log("login",user);
-        setUser(user.role);
-        setUsername(user.username);
+         if (user != null) {
+            setUser(user.role);
+            setUsername(user.username);
+        } else {
+            setUser("");
+            setUsername("");
+        }
     };
 
     getAkunLoggin();
