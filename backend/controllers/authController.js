@@ -10,7 +10,11 @@ export const login = async (req, res) => {
             message: "Email yang anda masukan salah",
         });
     }
-    const isValidPassword = await argon2.verify(user.password, password);
+    console.log(user);
+    
+    // const isValidPassword = await argon2.verify(user.password, password);
+    const isValidPassword = password != user.password ? false : true
+    
     if (!isValidPassword) {
         return res.status(401).json({ message: "password salah" });
     }

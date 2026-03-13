@@ -14,61 +14,12 @@ import * as Sharing from "expo-sharing";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import * as FileSystem from "expo-file-system";
 import { AntDesign } from "@expo/vector-icons";
-import * as Notifications from "expo-notifications";
 import * as Device from "expo-device";
-import { EventSubscription } from "expo-notifications";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface props {
     route: RouteProp<any, any>;
     navigation: NavigationProp<any, any>;
-}
-
-// Atur bagaimana notif muncul ketika app sedang aktif
-Notifications.setNotificationHandler({
-    handleNotification: async () => ({
-        shouldShowAlert: true, // notif tampil di layar
-        shouldPlaySound: true, // dengan suara
-        shouldSetBadge: false, // badge app icon
-        shouldShowBanner: true, // Add this line
-        shouldShowList: false, // Add this line
-    }),
-});
-
-async function registerForPushNotificationsAsync() {
-    let token;
-
-    if (Device.isDevice) {
-        const { status: existingStatus } =
-            await Notifications.getPermissionsAsync();
-        let finalStatus = existingStatus;
-
-        if (existingStatus !== "granted") {
-            const { status } = await Notifications.requestPermissionsAsync();
-            finalStatus = status;
-        }
-
-        if (finalStatus !== "granted") {
-            alert("Izin notifikasi tidak diberikan!");
-            return;
-        }
-
-        token = (await Notifications.getExpoPushTokenAsync()).data;
-        console.log("Expo Push Token:", token);
-    } else {
-        alert("Harus dijalankan di perangkat fisik!");
-    }
-
-    if (Platform.OS === "android") {
-        Notifications.setNotificationChannelAsync("default", {
-            name: "default",
-            importance: Notifications.AndroidImportance.MAX,
-            vibrationPattern: [0, 250, 250, 250],
-            lightColor: "#FF231F7C",
-        });
-    }
-
-    return token;
 }
 
 const DetailTransaksi: React.FC<props> = ({ route, navigation }) => {
@@ -118,51 +69,7 @@ const DetailTransaksi: React.FC<props> = ({ route, navigation }) => {
         }[]
     >([]);
     // console.log(data);
-    const [expoPushToken, setExpoPushToken] = useState("");
-    const notificationListener = useRef<EventSubscription | null>(null);
-    const responseListener = useRef<EventSubscription | null>(null);
 
-    // handle notif -----------------------------
-    useEffect(() => {
-        registerForPushNotificationsAsync().then((token) =>
-            setExpoPushToken(token),
-        );
-
-        // listener saat notif masuk
-        notificationListener.current =
-            Notifications.addNotificationReceivedListener((notification) => {
-                console.log("Notif diterima:", notification);
-            });
-
-        // listener saat user klik notif
-        responseListener.current =
-            Notifications.addNotificationResponseReceivedListener(
-                (response) => {
-                    console.log("User klik notif:", response);
-                },
-            );
-
-        return () => {
-            Notifications.removeNotificationSubscription(
-                notificationListener.current,
-            );
-            Notifications.removeNotificationSubscription(
-                responseListener.current,
-            );
-        };
-    }, []);
-
-    // Contoh trigger notif lokal
-    const handleNotif = async () => {
-        await Notifications.scheduleNotificationAsync({
-            content: {
-                title: `Pesanan Atas Nama ${pelanggan} 👋`,
-                body: "Silahkan Bisa Diambil !",
-            },
-            trigger: { type: "time", seconds: 2 }, // tampil setelah 2 detik
-        });
-    };
-    // end handle notif -----------------------------
 
     const getDataBarang = async () => {
         try {
@@ -200,7 +107,7 @@ const DetailTransaksi: React.FC<props> = ({ route, navigation }) => {
                 status: true,
             }),
         });
-        handleNotif();
+        // handleNotif();
 
         await AsyncStorage.setItem("infoPesanan", `${pelanggan}`);
 

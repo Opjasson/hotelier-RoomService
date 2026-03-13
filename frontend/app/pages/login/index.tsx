@@ -62,6 +62,8 @@ const LoginPage: React.FC<props> = ({ navigation }) => {
                 }),
             });
             const json = await response.json();
+            console.log(json);
+            
 
             if (JSON.stringify(response.status) === "401") {
                 setError("Email atau password salah!");
