@@ -223,107 +223,298 @@ const Laporan: React.FC<props> = ({ navigation }) => {
             )
             .join("");
         return `
-          <html>
-            <head>
-  <meta charset="UTF-8">
-  <title>Laporan Pencatatan - September 2020</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 30px;
-    }
-    h1, h2 {
-      text-align: center;
-    }
-    .header {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    .summary {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 20px;
-      gap: 40px;
-      font-size: 18px;
-    }
-    .summary div {
-      padding: 10px;
-      border-radius: 5px;
-      font-weight: bold;
-    }
-    .green { color: green; }
-    .red { color: red; }
-    .blue { color: #007bff; }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 30px;
-    }
-    th, td {
-      border: 1px solid #ccc;
-      padding: 8px;
-      text-align: center;
-    }
-    th {
-      background-color: #f4f4f4;
-    }
-    .footer {
-      text-align: right;
-      font-size: 14px;
-    }
-      tr#total {
-  font-size: 18px;
-  font-weight: bold;
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Laporan Penjualan</title>
+
+<style>
+
+body{
+    font-family: "Segoe UI", Arial, sans-serif;
+    margin:40px;
+    color:#333;
 }
-  </style>
+
+/* HEADER */
+
+.report-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border-bottom:2px solid #444;
+    padding-bottom:15px;
+    margin-bottom:25px;
+}
+
+.company{
+    display:flex;
+    align-items:center;
+}
+
+.company img{
+    height:60px;
+    margin-right:15px;
+}
+
+.company-info h2{
+    margin:0;
+    font-size:22px;
+}
+
+.company-info p{
+    margin:2px 0;
+    font-size:13px;
+    color:#555;
+}
+
+.report-info{
+    text-align:right;
+}
+
+.report-info h3{
+    margin:0;
+}
+
+.report-info p{
+    margin:2px;
+    font-size:13px;
+}
+
+/* SUMMARY */
+
+.summary{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:20px;
+}
+
+.summary-box{
+    width:30%;
+    border:1px solid #ddd;
+    border-radius:6px;
+    padding:10px 15px;
+    background:#fafafa;
+}
+
+.summary-title{
+    font-size:12px;
+    color:#777;
+}
+
+.summary-value{
+    font-size:18px;
+    font-weight:bold;
+    margin-top:5px;
+}
+
+/* TABLE */
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:10px;
+}
+
+thead{
+    background:#2c3e50;
+    color:white;
+}
+
+th{
+    padding:10px;
+    font-size:13px;
+}
+
+td{
+    padding:9px;
+    border-bottom:1px solid #ddd;
+    font-size:13px;
+}
+
+td:nth-child(1),
+td:nth-child(4){
+    text-align:center;
+}
+
+td:nth-child(5),
+td:nth-child(6){
+    text-align:right;
+}
+
+tbody tr:nth-child(even){
+    background:#f9f9f9;
+}
+
+/* TOTAL ROW */
+
+.total-row{
+    font-weight:bold;
+    background:#f1f3f6;
+}
+
+.total-row td{
+    padding:12px;
+}
+
+/* FOOTER */
+
+.footer{
+    margin-top:40px;
+    display:flex;
+    justify-content:space-between;
+}
+
+.signature{
+    text-align:center;
+    width:200px;
+}
+
+.signature-line{
+    margin-top:60px;
+    border-top:1px solid #333;
+    padding-top:5px;
+    font-size:13px;
+}
+
+.print-info{
+    font-size:12px;
+    color:#777;
+}
+
+</style>
 </head>
+
+
 <body>
 
-  <div class="header">
-    <img src="../../inventory/images/hotel.png" alt="Grandian Hotel" height="50"><br>
-    <h1>Laporan Pendataan Penjualan ${date.toISOString().split("T")[0]} - ${
-        date2.toISOString().split("T")[0]
-    }</h1>
-    <p><strong>Grandian Hotel Brebes</strong><br>+62 895-1462-6206</p>
-  </div>
+<!-- HEADER -->
 
-  <table>
-    <thead>
-      <tr>
-        <th>No</th>
-        <th>Tanggal</th>
-        <th>Nama</th>
-        <th>Qty</th>
-        <th>Harga</th>
-        <th>Total Penjualan</th>
-      </tr>
-    </thead>
-    <tbody>
-      ${rows}
-      <tr id="total">Total keseluruhan penjualan : ${totalPenjualan2}</tr>
-    </tbody>
-  </table>
+<div class="report-header">
+
+<div class="company">
+
+<img src="../../inventory/images/hotel.png">
+
+<div class="company-info">
+<h2>Hotel Petra Tegal</h2>
+<p>Jl. Raya Tegal</p>
+<p>Telp : +62 895-1462-6206</p>
+</div>
+
+</div>
+
+<div class="report-info">
+<h3>LAPORAN PENJUALAN</h3>
+<p>Periode</p>
+<p>${date.toISOString().split("T")[0]} - ${
+            date2.toISOString().split("T")[0]
+        }</p>
+</div>
+
+</div>
+
+
+<!-- SUMMARY -->
+
+<div class="summary">
+
+<div class="summary-box">
+<div class="summary-title">Total Transaksi</div>
+<div class="summary-value">${filteredData.length}</div>
+</div>
+
+<div class="summary-box">
+<div class="summary-title">Total Penjualan</div>
+<div class="summary-value">Rp ${totalPenjualan2.toLocaleString()}</div>
+</div>
+
+<div class="summary-box">
+<div class="summary-title">Tanggal Cetak</div>
+<div class="summary-value">${new Date().toLocaleDateString()}</div>
+</div>
+
+</div>
+
+
+<!-- TABLE -->
+
+<table>
+
+<thead>
+<tr>
+<th>No</th>
+<th>Tanggal</th>
+<th>Nama Barang</th>
+<th>Qty</th>
+<th>Harga</th>
+<th>Total</th>
+</tr>
+</thead>
+
+<tbody>
+
+${rows}
+
+<tr class="total-row">
+<td colspan="5" style="text-align:right;">TOTAL PENJUALAN</td>
+<td>Rp ${totalPenjualan2.toLocaleString()}</td>
+</tr>
+
+</tbody>
+
+</table>
+
+
+<!-- FOOTER -->
+
+<div class="footer">
+
+<div class="print-info">
+Dicetak pada : ${new Date().toLocaleString()}
+</div>
+
+<div class="signature">
+<div class="signature-line">
+Manager
+</div>
+</div>
+
+</div>
 
 </body>
-          </html>
-        `;
+</html>
+`;
     };
 
     const handleSavePdf = async () => {
         const htmlContent = generateHTML();
+
         const { uri } = await Print.printToFileAsync({
             html: htmlContent,
         });
 
-        const customFileName = `Laporan-Penjualan-Resto-GrandianBrebes_${dateNow}.pdf`;
-        const newUri = FileSystem.documentDirectory + customFileName;
+        const customFileName = `Laporan Penjualan Aplikasi - Room Service Hotel Petra_${dateNow}.pdf`;
 
-        await FileSystem.moveAsync({
-            from: uri,
-            to: newUri,
-        });
+        // buat file target
+        const targetFile = new FileSystem.File(
+            FileSystem.Paths.document,
+            customFileName,
+        );
 
-        await Sharing.shareAsync(newUri); // Menyimpan atau kirim PDF
+        // cek dulu
+        if (await targetFile.exists) {
+            await targetFile.delete();
+        }
+
+        // file sumber
+        const sourceFile = new FileSystem.File(uri);
+
+        // move → harus File object
+        await sourceFile.move(targetFile);
+
+        // share pakai uri hasil target
+        await Sharing.shareAsync(targetFile.uri);
     };
 
     // ------------------------------------------------------------
@@ -377,15 +568,10 @@ const Laporan: React.FC<props> = ({ navigation }) => {
 
             {/* menampilkan daftar menu */}
             <ScrollView style={{ paddingLeft: 10 }}>
-
                 {/* Title */}
-                <Text style={styles.title}>
-                    Hotel Petra
-                </Text>
+                <Text style={styles.title}>Hotel Petra</Text>
 
-                <Text style={styles.subtitle}>
-                    Room Service Print Reports
-                </Text>
+                <Text style={styles.subtitle}>Room Service Print Reports</Text>
 
                 {/* Filter Tanggal */}
                 <View style={styles.dateContainer}>
@@ -554,9 +740,10 @@ const styles = StyleSheet.create({
         backgroundColor: "#50C2C9",
         padding: 12,
         borderRadius: 10,
-        width: "100%",
+        width: "80%",
         justifyContent: "center",
         marginVertical: 15,
+        marginHorizontal: "auto"
     },
 
     printText: {
