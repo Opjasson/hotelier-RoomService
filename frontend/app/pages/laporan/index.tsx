@@ -673,9 +673,16 @@ Manager
                                 </View>
                             );
                         })}
-                        <Text style={{ fontSize: 15, fontWeight: "700" }}>
-                            Total Penjualan keseluruhan : {totalPenjualan2}
-                        </Text>
+                       
+                        {/* Total Penjualan */}
+                        <View style={styles.totalContainer}>
+                            <Text style={styles.totalLabel}>
+                                Total Penjualan
+                            </Text>
+                            <Text style={styles.totalValue}>
+                                Rp {totalPenjualan2.toLocaleString()}
+                            </Text>
+                        </View>
                     </View>
                 </ScrollView>
                 {/* ------------ */}
@@ -696,6 +703,22 @@ Manager
 };
 
 const styles = StyleSheet.create({
+    totalContainer:{
+    justifyContent:"space-between",
+    padding:14,
+    backgroundColor:"#f4f6f9",
+  },
+
+  totalLabel:{
+    fontSize:16,
+    fontWeight:"bold"
+  },
+
+  totalValue:{
+    fontSize:16,
+    fontWeight:"bold",
+    color:"#27ae60"
+  },
     title: {
         fontSize: 18,
         fontWeight: "bold",
@@ -743,7 +766,7 @@ const styles = StyleSheet.create({
         width: "80%",
         justifyContent: "center",
         marginVertical: 15,
-        marginHorizontal: "auto"
+        marginHorizontal: "auto",
     },
 
     printText: {
