@@ -223,7 +223,7 @@ const HistoryPesanan: React.FC<props> = ({ navigation }) => {
 
                             {/* ITEMS */}
                             {item.keranjangs.map((name, idx) => (
-                                <View style={styles.itemsContainer}>
+                                <View style={styles.itemsContainer} key={idx}>
                                     <View style={styles.itemRow}>
                                         <Text key={idx} style={styles.name}>
                                             {

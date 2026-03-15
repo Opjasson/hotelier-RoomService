@@ -13,7 +13,7 @@ import * as Print from "expo-print";
 import * as Sharing from "expo-sharing";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import * as FileSystem from "expo-file-system";
-import { AntDesign } from "@expo/vector-icons";
+import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import * as Device from "expo-device";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -50,16 +50,30 @@ const DetailTransaksi: React.FC<props> = ({ route, navigation }) => {
             `http://192.168.27.12:5000/transaksi/${routeUuid}`,
         );
         const dataJson = await response.json();
-        setCart(dataJson.keranjangs);
-        setUuid(dataJson.uuid);
-        setTotalHarga(dataJson.totalHarga);
-        setPelanggan(dataJson.namaPelanggan);
-        setBuktiBayar(dataJson.buktiBayar);
-        setCatatanTambahan(dataJson.catatanTambahan);
-        setCash(dataJson.cash);
-        setStatus(dataJson.status);
-        setCreatedAt(dataJson.createdAt);
-        setId(dataJson.id);
+
+        if (dataJson != null) {
+            setCart(dataJson.keranjangs);
+            setUuid(dataJson.uuid);
+            setTotalHarga(dataJson.totalHarga);
+            setPelanggan(dataJson.namaPelanggan);
+            setBuktiBayar(dataJson.buktiBayar);
+            setCatatanTambahan(dataJson.catatanTambahan);
+            setCash(dataJson.cash);
+            setStatus(dataJson.status);
+            setCreatedAt(dataJson.createdAt);
+            setId(dataJson.id);
+        } else {
+            setCart([]);
+            setUuid("");
+            setTotalHarga(0);
+            setPelanggan("");
+            setBuktiBayar("");
+            setCatatanTambahan(2);
+            setCash(1);
+            setStatus(1);
+            setCreatedAt("");
+            setId(1);
+        }
     };
 
     const [barang, setBarang] = useState<
@@ -158,9 +172,9 @@ const DetailTransaksi: React.FC<props> = ({ route, navigation }) => {
         </head>
         <body>
         <div class="center">
-        <h3>Grandian Brebes Restaurant</h3>
-        <p>Jl. Jendral Sudirman, No 20 <br>Kab. Brebes</p>
-        <p>No. Telp: +62 895-1462-6206</p>
+        <h3>Hotel Petra Tegal</h3>
+        <p>Jl. KS. Tubun No.65, Slerok, Kec. Tegal Tim., <br> Kota Tegal, Jawa Tengah 52192</p>
+        <p>No. Telp: +62 877-3818-2043</p>
         </div>
         <div class="line"></div>
         <div class="row"><span>${dateNow}</span></div>
@@ -187,24 +201,77 @@ const DetailTransaksi: React.FC<props> = ({ route, navigation }) => {
 
     const handleSavePdf = async () => {
         const htmlContent = handleCetak();
+
         const { uri } = await Print.printToFileAsync({
             html: htmlContent,
         });
 
-        const customFileName = `GrandianResto-Brebes_${dateNow}.pdf`;
-        const newUri = FileSystem.documentDirectory + customFileName;
+        const customFileName = `Nota Transaksi - Hotel Petra_${dateNow}.pdf`;
 
-        await FileSystem.moveAsync({
-            from: uri,
-            to: newUri,
-        });
+        // buat file target
+        const targetFile = new FileSystem.File(
+            FileSystem.Paths.document,
+            customFileName,
+        );
 
-        await Sharing.shareAsync(newUri); // Menyimpan atau kirim PDF
+        // cek dulu
+        if (await targetFile.exists) {
+            await targetFile.delete();
+        }
+
+        // file sumber
+        const sourceFile = new FileSystem.File(uri);
+
+        // move → harus File object
+        await sourceFile.move(targetFile);
+
+        // share pakai uri hasil target
+        await Sharing.shareAsync(targetFile.uri);
     };
 
     return (
         <SafeAreaView>
             <ScrollView>
+                <View
+                    style={{
+                        justifyContent: "center",
+                        gap: 10,
+                        flexDirection: "row",
+                        marginBottom: 10,
+                        marginHorizontal: 10,
+                    }}
+                >
+                    {/* Button Selesai */}
+                    <TouchableOpacity
+                        style={[styles.button, styles.finish]}
+                        onPress={() => handleUpdateStatus()}
+                    >
+                        <MaterialIcons
+                            name="check-circle"
+                            size={20}
+                            color="#fff"
+                        />
+                        <Text style={styles.text}>Selesai</Text>
+                    </TouchableOpacity>
+
+                    {/* Button Delete */}
+                    <TouchableOpacity
+                        style={[styles.button, styles.delete]}
+                        onPress={() => deleteTransaksi()}
+                    >
+                        <MaterialIcons name="delete" size={20} color="#fff" />
+                        <Text style={styles.text}>Delete</Text>
+                    </TouchableOpacity>
+
+                    {/* Button Cetak */}
+                    <TouchableOpacity
+                        style={[styles.button, styles.print]}
+                        onPress={handleSavePdf}
+                    >
+                        <MaterialIcons name="print" size={20} color="#fff" />
+                        <Text style={styles.text}>Cetak</Text>
+                    </TouchableOpacity>
+                </View>
                 <TouchableOpacity style={styles.card}>
                     {/* HEADER */}
                     <View style={styles.header}>
@@ -276,62 +343,43 @@ const DetailTransaksi: React.FC<props> = ({ route, navigation }) => {
                     {/* TOTAL */}
                     <View style={styles.footer}>
                         <Text style={styles.totalLabel}>Total</Text>
-                        <Text style={styles.totalPrice}>Rp 20000</Text>
+                        <Text style={styles.totalPrice}>Rp {totalHarga}</Text>
                     </View>
 
                     {/* end header */}
                 </TouchableOpacity>
-
-                <View
-                    style={{
-                        justifyContent: "center",
-                        gap: 10,
-                        flexDirection: "row",
-                        marginBottom: 10,
-                    }}
-                >
-                    <TouchableOpacity
-                        onPress={() => handleUpdateStatus()}
-                        style={{
-                            backgroundColor: "#799EFF",
-                            padding: 10,
-                            borderRadius: 10,
-                        }}
-                    >
-                        <Text>Selesai</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                        onPress={() => deleteTransaksi()}
-                        style={{
-                            backgroundColor: "#FB4141",
-                            padding: 10,
-                            borderRadius: 10,
-                            paddingHorizontal: 13,
-                        }}
-                    >
-                        <Text>Delete</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                        onPress={handleSavePdf}
-                        style={{
-                            backgroundColor: "#4A9782",
-                            padding: 10,
-                            borderRadius: 10,
-                            // paddingHorizontal: 13,
-                            flexDirection: "row",
-                        }}
-                    >
-                        <FontAwesome5 name="print" size={24} color="black" />
-                        <Text>Cetak</Text>
-                    </TouchableOpacity>
-                </View>
             </ScrollView>
         </SafeAreaView>
     );
 };
 const styles = StyleSheet.create({
+    button: {
+        flex: 1,
+        flexDirection: "row",
+        justifyContent: "center",
+        alignItems: "center",
+        paddingVertical: 12,
+        borderRadius: 10,
+        marginHorizontal: 5,
+    },
+
+    text: {
+        color: "#fff",
+        fontWeight: "bold",
+        marginLeft: 6,
+    },
+
+    finish: {
+        backgroundColor: "#27ae60",
+    },
+
+    delete: {
+        backgroundColor: "#e74c3c",
+    },
+
+    print: {
+        backgroundColor: "#3498db",
+    },
     card: {
         backgroundColor: "#fff",
         marginVertical: 10,
@@ -419,14 +467,6 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: "bold",
         color: "#27ae60",
-    },
-
-    button: {
-        marginTop: 12,
-        backgroundColor: "#4A90E2",
-        paddingVertical: 10,
-        borderRadius: 10,
-        alignItems: "center",
     },
 
     buttonText: {
