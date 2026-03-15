@@ -16,6 +16,7 @@ import * as FileSystem from "expo-file-system";
 import { AntDesign } from "@expo/vector-icons";
 import * as Device from "expo-device";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 interface props {
     route: RouteProp<any, any>;
@@ -69,7 +70,6 @@ const DetailTransaksi: React.FC<props> = ({ route, navigation }) => {
         }[]
     >([]);
     // console.log(data);
-
 
     const getDataBarang = async () => {
         try {
@@ -203,62 +203,55 @@ const DetailTransaksi: React.FC<props> = ({ route, navigation }) => {
     };
 
     return (
-        <ScrollView>
-            <View style={styles.card}>
-                <View style={styles.rowBetween}>
-                    <Text style={styles.date}>{createdAt?.split("T")[0]}</Text>
-                    <Text style={styles.type}>
-                        Status{" "}
-                        {status === null ? (
-                            <AntDesign
-                                name="checkcircleo"
-                                size={16}
-                                color="black"
-                            />
-                        ) : (
-                            <AntDesign
-                                name="checkcircle"
-                                size={16}
-                                color="green"
-                            />
-                        )}
-                    </Text>
-                </View>
-                <View style={styles.titleRow}>
-                    <View style={styles.verticalLine} />
-                    <View style={styles.content}>
-                        <Text style={styles.title}>
-                            Pelanggan : {pelanggan}
-                        </Text>
-                        <Text style={styles.location}>Id Pesanan : {uuid}</Text>
-
-                        <Text>Daftar Pesanan :</Text>
-                        {cart.map((name, idx) => (
-                            <Text key={idx} style={styles.name}>
-                                {
-                                    barang.find((a) => a.id === name.productId)
-                                        ?.nama_product
-                                }{" "}
-                                x {name.qty}
+        <SafeAreaView>
+            <ScrollView>
+                <TouchableOpacity style={styles.card}>
+                    {/* HEADER */}
+                    <View style={styles.header}>
+                        <View>
+                            <Text style={styles.orderId}>
+                                Order Id : {uuid?.slice(0, 8)}
                             </Text>
+                            <Text style={styles.date}>
+                                {createdAt?.split("T")[0]}
+                            </Text>
+                        </View>
+
+                        <Text style={styles.type}>
+                            Status{" "}
+                            {status === null ? <Text>✘</Text> : <Text>✔</Text>}
+                        </Text>
+                    </View>
+
+                    {/* USER */}
+                    <Text style={styles.username}>
+                        Username : 👤 {pelanggan}
+                    </Text>
+
+                    {/* ITEMS */}
+
+                    <View style={styles.itemsContainer}>
+                        {cart.map((name, idx) => (
+                            <View key={idx} style={styles.itemRow}>
+                                <Text key={idx} style={styles.name}>
+                                    {
+                                        barang.find(
+                                            (a) => a.id === name.productId,
+                                        )?.nama_product
+                                    }{" "}
+                                    x {name.qty}
+                                </Text>
+
+                                <Text style={styles.itemPrice}>
+                                    Rp{" "}
+                                    {
+                                        barang.find(
+                                            (a) => a.id === name.productId,
+                                        )?.harga_product
+                                    }{" "}
+                                </Text>
+                            </View>
                         ))}
-
-                        <Text style={{ marginTop: 7, borderTopWidth: 2 }}>
-                            Cash :
-                        </Text>
-                        <Text style={styles.location}>
-                            Rp.{cash !== null ? cash?.toLocaleString() : "-0"}
-                        </Text>
-
-                        <Text style={{ marginTop: 7, borderTopWidth: 2 }}>
-                            Kembali :
-                        </Text>
-                        <Text style={styles.location}>
-                            Rp.
-                            {cash !== null
-                                ? (cash - totalHarga).toLocaleString()
-                                : "-0"}
-                        </Text>
 
                         <Text style={{ marginTop: 7, borderTopWidth: 2 }}>
                             Catatan Tambahan :
@@ -279,66 +272,232 @@ const DetailTransaksi: React.FC<props> = ({ route, navigation }) => {
                             ""
                         )}
                     </View>
-                </View>
-                <View style={styles.rowBetween}>
-                    <TouchableOpacity>
-                        <Text style={styles.showLess}>Total Nominal :</Text>
-                    </TouchableOpacity>
-                    <Text style={styles.price}>
-                        Rp. {totalHarga?.toLocaleString()}
-                    </Text>
-                </View>
-            </View>
 
-            <View
-                style={{
-                    justifyContent: "center",
-                    gap: 10,
-                    flexDirection: "row",
-                    marginBottom: 10,
-                }}
-            >
-                <TouchableOpacity
-                    onPress={() => handleUpdateStatus()}
-                    style={{
-                        backgroundColor: "#799EFF",
-                        padding: 10,
-                        borderRadius: 10,
-                    }}
-                >
-                    <Text>Selesai</Text>
+                    {/* TOTAL */}
+                    <View style={styles.footer}>
+                        <Text style={styles.totalLabel}>Total</Text>
+                        <Text style={styles.totalPrice}>Rp 20000</Text>
+                    </View>
+
+                    {/* end header */}
                 </TouchableOpacity>
 
-                <TouchableOpacity
-                    onPress={() => deleteTransaksi()}
+                <View
                     style={{
-                        backgroundColor: "#FB4141",
-                        padding: 10,
-                        borderRadius: 10,
-                        paddingHorizontal: 13,
-                    }}
-                >
-                    <Text>Delete</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                    onPress={handleSavePdf}
-                    style={{
-                        backgroundColor: "#4A9782",
-                        padding: 10,
-                        borderRadius: 10,
-                        // paddingHorizontal: 13,
+                        justifyContent: "center",
+                        gap: 10,
                         flexDirection: "row",
+                        marginBottom: 10,
                     }}
                 >
-                    <FontAwesome5 name="print" size={24} color="black" />
-                    <Text>Cetak</Text>
-                </TouchableOpacity>
-            </View>
-        </ScrollView>
+                    <TouchableOpacity
+                        onPress={() => handleUpdateStatus()}
+                        style={{
+                            backgroundColor: "#799EFF",
+                            padding: 10,
+                            borderRadius: 10,
+                        }}
+                    >
+                        <Text>Selesai</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        onPress={() => deleteTransaksi()}
+                        style={{
+                            backgroundColor: "#FB4141",
+                            padding: 10,
+                            borderRadius: 10,
+                            paddingHorizontal: 13,
+                        }}
+                    >
+                        <Text>Delete</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        onPress={handleSavePdf}
+                        style={{
+                            backgroundColor: "#4A9782",
+                            padding: 10,
+                            borderRadius: 10,
+                            // paddingHorizontal: 13,
+                            flexDirection: "row",
+                        }}
+                    >
+                        <FontAwesome5 name="print" size={24} color="black" />
+                        <Text>Cetak</Text>
+                    </TouchableOpacity>
+                </View>
+            </ScrollView>
+        </SafeAreaView>
     );
 };
 const styles = StyleSheet.create({
+    card: {
+        backgroundColor: "#fff",
+        marginVertical: 10,
+        marginHorizontal: 16,
+        borderRadius: 16,
+        padding: 16,
+        elevation: 4,
+        shadowColor: "#000",
+        shadowOpacity: 0.1,
+        shadowRadius: 8,
+    },
+
+    header: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+    },
+
+    orderId: {
+        fontSize: 16,
+        fontWeight: "bold",
+    },
+
+    date: {
+        fontSize: 12,
+        color: "#888",
+    },
+
+    username: {
+        marginTop: 10,
+        fontSize: 14,
+        fontWeight: "500",
+    },
+
+    statusBadge: {
+        paddingHorizontal: 10,
+        paddingVertical: 4,
+        borderRadius: 8,
+    },
+
+    statusText: {
+        color: "#fff",
+        fontSize: 12,
+        fontWeight: "bold",
+    },
+
+    itemsContainer: {
+        marginTop: 12,
+        borderTopWidth: 1,
+        borderTopColor: "#eee",
+        paddingTop: 10,
+    },
+
+    itemRow: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        marginVertical: 3,
+    },
+
+    itemName: {
+        fontSize: 14,
+        color: "#333",
+    },
+
+    itemPrice: {
+        fontSize: 14,
+        fontWeight: "500",
+    },
+
+    footer: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        marginTop: 10,
+        borderTopWidth: 1,
+        borderTopColor: "#eee",
+        paddingTop: 10,
+    },
+
+    totalLabel: {
+        fontSize: 15,
+        fontWeight: "bold",
+    },
+
+    totalPrice: {
+        fontSize: 16,
+        fontWeight: "bold",
+        color: "#27ae60",
+    },
+
+    button: {
+        marginTop: 12,
+        backgroundColor: "#4A90E2",
+        paddingVertical: 10,
+        borderRadius: 10,
+        alignItems: "center",
+    },
+
+    buttonText: {
+        color: "#fff",
+        fontWeight: "bold",
+    },
+
+    container: {
+        flex: 1,
+        backgroundColor: "#f4f4f4",
+        paddingBottom: 20,
+        paddingTop: 10,
+    },
+    rowBetween: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+    },
+    type: {
+        fontSize: 13,
+        color: "#fff",
+        backgroundColor: "#50C2C9",
+        padding: 5,
+        borderRadius: 5,
+    },
+    titleRow: {
+        flexDirection: "row",
+        marginTop: 8,
+    },
+    verticalLine: {
+        width: 5,
+        borderRadius: 3,
+        backgroundColor: "red",
+        marginRight: 10,
+    },
+    content: {
+        flex: 1,
+    },
+    title: {
+        fontSize: 16,
+        fontWeight: "bold",
+    },
+    location: {
+        fontSize: 14,
+        color: "#555",
+        marginTop: 2,
+    },
+    name: {
+        fontSize: 13,
+        color: "#333",
+        marginTop: 2,
+    },
+    showLess: {
+        fontSize: 13,
+        color: "#888",
+        marginTop: 8,
+    },
+    price: {
+        fontWeight: "bold",
+        fontSize: 16,
+        marginTop: 8,
+    },
+    fab: {
+        position: "absolute",
+        bottom: 30,
+        alignSelf: "center",
+        backgroundColor: "#FDCB00",
+        padding: 18,
+        borderRadius: 50,
+        elevation: 5,
+    },
     img: {
         width: 300,
         height: 600,

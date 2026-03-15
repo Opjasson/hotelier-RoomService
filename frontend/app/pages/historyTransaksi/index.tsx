@@ -396,22 +396,10 @@ const styles = StyleSheet.create({
         paddingBottom: 20,
         paddingTop: 10,
     },
-    card: {
-        backgroundColor: "#fff",
-        marginHorizontal: 16,
-        marginVertical: 8,
-        borderRadius: 12,
-        padding: 16,
-        elevation: 2,
-    },
     rowBetween: {
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-    },
-    date: {
-        fontSize: 13,
-        color: "#333",
     },
     type: {
         fontSize: 13,
