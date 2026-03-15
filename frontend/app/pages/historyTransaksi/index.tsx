@@ -165,7 +165,7 @@ const HistoryPesanan: React.FC<props> = ({ navigation }) => {
                     alignItems: "center",
                     paddingTop: 10,
                     justifyContent: "space-between",
-                    paddingHorizontal: 20
+                    paddingHorizontal: 20,
                 }}
             >
                 <Text style={{ fontWeight: "500", fontSize: 20 }}>
@@ -195,10 +195,17 @@ const HistoryPesanan: React.FC<props> = ({ navigation }) => {
                                 })
                             }
                         >
-                            <View style={styles.rowBetween}>
-                                <Text style={styles.date}>
-                                    {item.createdAt.split("T")[0]}
-                                </Text>
+                            {/* HEADER */}
+                            <View style={styles.header}>
+                                <View>
+                                    <Text style={styles.orderId}>
+                                        Order Id : {item.uuid.slice(0, 8)}
+                                    </Text>
+                                    <Text style={styles.date}>
+                                        {item.createdAt.split("T")[0]}
+                                    </Text>
+                                </View>
+
                                 <Text style={styles.type}>
                                     Status{" "}
                                     {item.status === null ? (
@@ -208,16 +215,16 @@ const HistoryPesanan: React.FC<props> = ({ navigation }) => {
                                     )}
                                 </Text>
                             </View>
-                            <View style={styles.titleRow}>
-                                <View style={styles.verticalLine} />
-                                <View style={styles.content}>
-                                    <Text style={styles.title}>
-                                        Username : {item.namaPelanggan}
-                                    </Text>
-                                    <Text style={styles.location}>
-                                        Id Pesanan : {item.uuid.slice(0, 8)}
-                                    </Text>
-                                    {item.keranjangs.map((name, idx) => (
+
+                            {/* USER */}
+                            <Text style={styles.username}>
+                                Username : 👤 {item.namaPelanggan}
+                            </Text>
+
+                            {/* ITEMS */}
+                            {item.keranjangs.map((name, idx) => (
+                                <View style={styles.itemsContainer}>
+                                    <View style={styles.itemRow}>
                                         <Text key={idx} style={styles.name}>
                                             {
                                                 barang.find(
@@ -227,19 +234,42 @@ const HistoryPesanan: React.FC<props> = ({ navigation }) => {
                                             }{" "}
                                             x {name.qty}
                                         </Text>
-                                    ))}
+                                        <Text style={styles.itemPrice}>
+                                            Rp{" "}
+                                            {
+                                                barang.find(
+                                                    (a) =>
+                                                        a.id === name.productId,
+                                                )?.harga_product
+                                            }
+                                        </Text>
+                                    </View>
                                 </View>
-                            </View>
-                            <View style={styles.rowBetween}>
-                                <TouchableOpacity>
-                                    <Text style={styles.showLess}>
-                                        Total Nominal :
-                                    </Text>
-                                </TouchableOpacity>
-                                <Text style={styles.price}>
-                                    {item.totalHarga}
+                            ))}
+
+                            {/* TOTAL */}
+                            <View style={styles.footer}>
+                                <Text style={styles.totalLabel}>Total</Text>
+                                <Text style={styles.totalPrice}>
+                                    Rp {item.totalHarga}
                                 </Text>
                             </View>
+
+                            {/* BUTTON */}
+                            <TouchableOpacity
+                                style={styles.button}
+                                onPress={() =>
+                                    navigation.navigate("DetailTransaksi", {
+                                        uuid: item.uuid,
+                                    })
+                                }
+                            >
+                                <Text style={styles.buttonText}>
+                                    Lihat Detail
+                                </Text>
+                            </TouchableOpacity>
+
+                            {/* end header */}
                         </TouchableOpacity>
                     ))}
             </ScrollView>
@@ -258,6 +288,108 @@ const HistoryPesanan: React.FC<props> = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+    card: {
+        backgroundColor: "#fff",
+        marginVertical: 10,
+        marginHorizontal: 16,
+        borderRadius: 16,
+        padding: 16,
+        elevation: 4,
+        shadowColor: "#000",
+        shadowOpacity: 0.1,
+        shadowRadius: 8,
+    },
+
+    header: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+    },
+
+    orderId: {
+        fontSize: 16,
+        fontWeight: "bold",
+    },
+
+    date: {
+        fontSize: 12,
+        color: "#888",
+    },
+
+    username: {
+        marginTop: 10,
+        fontSize: 14,
+        fontWeight: "500",
+    },
+
+    statusBadge: {
+        paddingHorizontal: 10,
+        paddingVertical: 4,
+        borderRadius: 8,
+    },
+
+    statusText: {
+        color: "#fff",
+        fontSize: 12,
+        fontWeight: "bold",
+    },
+
+    itemsContainer: {
+        marginTop: 12,
+        borderTopWidth: 1,
+        borderTopColor: "#eee",
+        paddingTop: 10,
+    },
+
+    itemRow: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        marginVertical: 3,
+    },
+
+    itemName: {
+        fontSize: 14,
+        color: "#333",
+    },
+
+    itemPrice: {
+        fontSize: 14,
+        fontWeight: "500",
+    },
+
+    footer: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        marginTop: 10,
+        borderTopWidth: 1,
+        borderTopColor: "#eee",
+        paddingTop: 10,
+    },
+
+    totalLabel: {
+        fontSize: 15,
+        fontWeight: "bold",
+    },
+
+    totalPrice: {
+        fontSize: 16,
+        fontWeight: "bold",
+        color: "#27ae60",
+    },
+
+    button: {
+        marginTop: 12,
+        backgroundColor: "#4A90E2",
+        paddingVertical: 10,
+        borderRadius: 10,
+        alignItems: "center",
+    },
+
+    buttonText: {
+        color: "#fff",
+        fontWeight: "bold",
+    },
+
     container: {
         flex: 1,
         backgroundColor: "#f4f4f4",
@@ -286,7 +418,7 @@ const styles = StyleSheet.create({
         color: "#fff",
         backgroundColor: "#50C2C9",
         padding: 5,
-        borderRadius: 5
+        borderRadius: 5,
     },
     titleRow: {
         flexDirection: "row",
