@@ -173,7 +173,62 @@ const SetAkun: React.FC<props> = ({ navigation }) => {
             </TouchableOpacity>
             {/* end button transaksi */}
 
-            <View
+            <View style={styles.container}>
+                {/* Header */}
+                <View style={[styles.row, styles.header]}>
+                    <Text style={{ width: 50, paddingLeft: 5 }}>No</Text>
+                    <Text style={[styles.cell, styles.headerText]}>Room</Text>
+                    <Text style={[styles.cell, styles.headerText, { flex: 2 }]}>
+                        Username
+                    </Text>
+                    <Text style={[styles.cell, styles.headerText]}>Action</Text>
+                </View>
+
+                {/* Data Rows */}
+
+                {user.map((item, index) => {
+                    return (
+                        <View key={index} style={styles.row}>
+                            <Text style={{ width: 50, paddingLeft: 5 }}>
+                                {index + 1}
+                            </Text>
+                            <Text style={[styles.cell, styles.green]}>
+                                {item.email}
+                            </Text>
+                            <Text style={[styles.cell, { flex: 2 }]}>
+                                {item.username}
+                            </Text>
+                            <Text style={[styles.cell, styles.red]}>
+                                <TouchableOpacity
+                                    onPress={() =>
+                                        navigation.navigate("UbahUser", {
+                                            id: item.id,
+                                            data: item,
+                                        })
+                                    }
+                                >
+                                    <Text
+                                        style={{ fontSize: 18, color: "blue" }}
+                                    >
+                                        Ubah
+                                    </Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    onPress={() => deleteAkun(item.id)}
+                                >
+                                    <Text
+                                        style={{ fontSize: 18, color: "red" }}
+                                    >
+                                        Hapus
+                                    </Text>
+                                </TouchableOpacity>
+                            </Text>
+                        </View>
+                    );
+                })}
+            </View>
+
+            {/* <View
                 style={{
                     flexDirection: "row",
                     borderTopWidth: 2,
@@ -209,27 +264,9 @@ const SetAkun: React.FC<props> = ({ navigation }) => {
                             width: "40%",
                             gap: 8,
                         }}
-                    >
-                        <TouchableOpacity
-                            onPress={() =>
-                                navigation.navigate("UbahUser", {
-                                    id: item.id,
-                                    data: item,
-                                })
-                            }
-                        >
-                            <Text style={{ fontSize: 18, color: "blue" }}>
-                                Ubah
-                            </Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => deleteAkun(item.id)}>
-                            <Text style={{ fontSize: 18, color: "red" }}>
-                                Hapus
-                            </Text>
-                        </TouchableOpacity>
-                    </View>
+                    ></View>
                 </View>
-            ))}
+            ))} */}
 
             <MenuDrawer
                 open={open}
@@ -244,6 +281,37 @@ const SetAkun: React.FC<props> = ({ navigation }) => {
     );
 };
 const styles = StyleSheet.create({
+    container: {
+        padding: 10,
+        minWidth: 700,
+    },
+    row: {
+        flexDirection: "row",
+        borderBottomWidth: 1,
+        borderColor: "#ccc",
+        paddingVertical: 6,
+    },
+    header: {
+        backgroundColor: "#f0f0f0",
+        borderBottomWidth: 2,
+    },
+    headerText: {
+        fontWeight: "bold",
+    },
+    cell: {
+        flex: 1,
+        // paddingHorizontal: 6,
+        // paddingRight : 20,
+        width: 110,
+        borderRightWidth: 0.5,
+        paddingLeft: 10,
+    },
+    green: {
+        color: "green",
+    },
+    red: {
+        color: "red",
+    },
     headInfo: {
         borderRadius: 15,
         padding: 5,
