@@ -5,7 +5,7 @@ import argon2 from "argon2";
 export const getUsers = async (req, res) => {
     try {
         const response = await Users.findAll({
-            attributes: ["id", "email", "username", "role", "room"],
+            attributes: ["id", "email", "username", "role"],
         });
         res.status(200).json({ msg: "get data succesfully", data: response });
     } catch (error) {
@@ -18,6 +18,24 @@ export const getUserById = async (req, res) => {
         const response = await Users.findOne({
             where: {
                 id: req.params.id,
+            },
+            include: [
+                {
+                    model : KeranjangModel
+                }
+            ]
+        });
+        res.status(200).json(response);
+    } catch (error) {
+        res.status(400).json({ msg: error.message });
+    }
+};
+
+export const getUserByUsername = async (req, res) => {
+    try {
+        const response = await Users.findOne({
+            where: {
+                username: req.params.username,
             },
             include: [
                 {

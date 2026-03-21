@@ -38,6 +38,7 @@ const DetailTransaksi: React.FC<props> = ({ route, navigation }) => {
     const [totalHarga, setTotalHarga] = useState<number>();
     const [createdAt, setCreatedAt] = useState<string>();
     const [pelanggan, setPelanggan] = useState<string>();
+    const [room, setRoom] = useState<string>();
     const [buktiBayar, setBuktiBayar] = useState<string>();
     const [cash, setCash] = useState<number>();
     const [catatanTambahan, setCatatanTambahan] = useState<number>();
@@ -50,12 +51,15 @@ const DetailTransaksi: React.FC<props> = ({ route, navigation }) => {
             `http://192.168.27.12:5000/transaksi/${routeUuid}`,
         );
         const dataJson = await response.json();
+        console.log("Datanyg",dataJson);
+        
 
         if (dataJson != null) {
             setCart(dataJson.keranjangs);
             setUuid(dataJson.uuid);
             setTotalHarga(dataJson.totalHarga);
             setPelanggan(dataJson.namaPelanggan);
+            setRoom(dataJson.email);
             setBuktiBayar(dataJson.buktiBayar);
             setCatatanTambahan(dataJson.catatanTambahan);
             setCash(dataJson.cash);
@@ -293,6 +297,10 @@ const DetailTransaksi: React.FC<props> = ({ route, navigation }) => {
                     {/* USER */}
                     <Text style={styles.username}>
                         Username : 👤 {pelanggan}
+                    </Text>
+
+                    <Text style={styles.username}>
+                        Username : 👤 {room}
                     </Text>
 
                     {/* ITEMS */}
