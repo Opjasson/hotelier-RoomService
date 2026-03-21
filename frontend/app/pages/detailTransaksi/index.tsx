@@ -48,18 +48,15 @@ const DetailTransaksi: React.FC<props> = ({ route, navigation }) => {
 
     const getTransaksiByUUID = async () => {
         const response = await fetch(
-            `http://192.168.27.12:5000/transaksi/${routeUuid}`,
+            `http://192.168.6.12:5000/transaksi/${routeUuid}`,
         );
         const dataJson = await response.json();
-        console.log("Datanyg",dataJson);
-        
 
         if (dataJson != null) {
             setCart(dataJson.keranjangs);
             setUuid(dataJson.uuid);
             setTotalHarga(dataJson.totalHarga);
             setPelanggan(dataJson.namaPelanggan);
-            setRoom(dataJson.email);
             setBuktiBayar(dataJson.buktiBayar);
             setCatatanTambahan(dataJson.catatanTambahan);
             setCash(dataJson.cash);
@@ -80,6 +77,30 @@ const DetailTransaksi: React.FC<props> = ({ route, navigation }) => {
         }
     };
 
+    const getUserByUsername = async () => {
+        try {
+            const response = await fetch(
+                `http://192.168.6.12:5000/user/username/${pelanggan}`,
+                {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                },
+            );
+            const resJson = await response.json();
+            console.log("DataJson", resJson);
+
+            if (resJson != null) {
+                setRoom(resJson.email);
+            } else {
+                setRoom("");
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     const [barang, setBarang] = useState<
         {
             id: number;
@@ -91,7 +112,7 @@ const DetailTransaksi: React.FC<props> = ({ route, navigation }) => {
 
     const getDataBarang = async () => {
         try {
-            const response = await fetch("http://192.168.27.12:5000/product");
+            const response = await fetch("http://192.168.6.12:5000/product");
             const barang = await response.json();
             setBarang(barang);
         } catch (error) {
@@ -101,14 +122,18 @@ const DetailTransaksi: React.FC<props> = ({ route, navigation }) => {
 
     useEffect(() => {
         getTransaksiByUUID();
-    });
+
+        if (pelanggan) {
+            getUserByUsername();
+        }
+    }, [pelanggan]);
 
     useEffect(() => {
         getDataBarang();
     }, []);
 
     const deleteTransaksi = async () => {
-        await fetch(`http://192.168.27.12:5000/transaksi/${id}`, {
+        await fetch(`http://192.168.6.12:5000/transaksi/${id}`, {
             method: "DELETE",
         });
         alert("Transaksi Berhasil Dihapus!");
@@ -116,7 +141,7 @@ const DetailTransaksi: React.FC<props> = ({ route, navigation }) => {
     };
 
     const handleUpdateStatus = async () => {
-        await fetch(`http://192.168.27.12:5000/transaksi/${id}`, {
+        await fetch(`http://192.168.6.12:5000/transaksi/${id}`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
@@ -125,7 +150,6 @@ const DetailTransaksi: React.FC<props> = ({ route, navigation }) => {
                 status: true,
             }),
         });
-        // handleNotif();
 
         await AsyncStorage.setItem("infoPesanan", `${pelanggan}`);
 
@@ -299,9 +323,7 @@ const DetailTransaksi: React.FC<props> = ({ route, navigation }) => {
                         Username : 👤 {pelanggan}
                     </Text>
 
-                    <Text style={styles.username}>
-                        Username : 👤 {room}
-                    </Text>
+                    <Text style={styles.username}>Room : ᯽ {room}</Text>
 
                     {/* ITEMS */}
 
@@ -329,7 +351,7 @@ const DetailTransaksi: React.FC<props> = ({ route, navigation }) => {
                         ))}
 
                         <Text style={{ marginTop: 7, borderTopWidth: 2 }}>
-                            Catatan Tambahan :
+                            Note Plus :
                         </Text>
                         <Text style={styles.location}>{catatanTambahan}</Text>
 

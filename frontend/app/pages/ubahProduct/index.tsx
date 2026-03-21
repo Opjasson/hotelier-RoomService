@@ -103,7 +103,7 @@ const UbahProduct: React.FC<props> = ({ navigation, route }) => {
 
     // Handle Update Product -----------
     const handleUpdateProduct = async () => {
-        await fetch(`http://192.168.27.12:5000/product/${id}`, {
+        await fetch(`http://192.168.6.12:5000/product/${id}`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",

@@ -31,7 +31,7 @@ const SetAkun: React.FC<props> = ({ navigation }) => {
 
     // Get Data Login --------------------------
     const getUserId = async () => {
-        const response = await fetch("http://192.168.27.12:5000/login");
+        const response = await fetch("http://192.168.6.12:5000/login");
         const data = await response.json();
         setIdLogin(Object.values(data)[0]?.id);
     };
@@ -41,7 +41,7 @@ const SetAkun: React.FC<props> = ({ navigation }) => {
     }, []);
 
     const logOut = async () => {
-        await fetch(`http://192.168.27.12:5000/login/${idLogin}`, {
+        await fetch(`http://192.168.6.12:5000/login/${idLogin}`, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
@@ -79,14 +79,14 @@ const SetAkun: React.FC<props> = ({ navigation }) => {
 
     // Get data lewat api
     const fetchData = async () => {
-        const response = await fetch("http://192.168.27.12:5000/user");
+        const response = await fetch("http://192.168.6.12:5000/user");
         const data = await response.json();
         setUser(data.data);
     };
 
     // Get data lewat api
     const deleteAkun = async (id: number) => {
-        const response = await fetch(`http://192.168.27.12:5000/user/${id}`, {
+        const response = await fetch(`http://192.168.6.12:5000/user/${id}`, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",

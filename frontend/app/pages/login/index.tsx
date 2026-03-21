@@ -29,7 +29,7 @@ const LoginPage: React.FC<props> = ({ navigation }) => {
 
     const getUserId = async () => {
         try {
-            const response = await fetch("http://192.168.27.12:5000/login");
+            const response = await fetch("http://192.168.6.12:5000/login");
             const datas = await response.json();
             setData(datas); // update state
         } catch (error) {
@@ -51,7 +51,7 @@ const LoginPage: React.FC<props> = ({ navigation }) => {
 
     const handleLogin = async () => {
         if (room && code) {
-            const response = await fetch("http://192.168.27.12:5000/login", {
+            const response = await fetch("http://192.168.6.12:5000/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -63,7 +63,6 @@ const LoginPage: React.FC<props> = ({ navigation }) => {
             });
             const json = await response.json();
             console.log(json);
-            
 
             if (JSON.stringify(response.status) === "401") {
                 setError("Email atau password salah!");
@@ -112,8 +111,6 @@ const LoginPage: React.FC<props> = ({ navigation }) => {
                 >
                     <Text style={styles.btnText}>Login Tamu</Text>
                 </TouchableOpacity>
-
-                
             </ScrollView>
         </SafeAreaView>
     );

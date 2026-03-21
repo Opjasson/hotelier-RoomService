@@ -73,7 +73,7 @@ const Home: React.FC<props> = ({ navigation }) => {
 
     // Get Data Login --------------------------
     const getUserId = async () => {
-        const response = await fetch("http://192.168.27.12:5000/login");
+        const response = await fetch("http://192.168.6.12:5000/login");
         const data = await response.json();
         setIdLogin(Object.values(data)[0]?.id);
         setId(Object.values(data)[0]?.userId);
@@ -84,7 +84,7 @@ const Home: React.FC<props> = ({ navigation }) => {
     }, []);
 
     const getAkunLoggin = async () => {
-        const response = await fetch(`http://192.168.27.12:5000/user/${id}`);
+        const response = await fetch(`http://192.168.6.12:5000/user/${id}`);
         const user = await response.json();
         // console.log("login",user);
         if (user != null) {
@@ -99,7 +99,7 @@ const Home: React.FC<props> = ({ navigation }) => {
     };
 
     const logOut = async () => {
-        await fetch(`http://192.168.27.12:5000/login/${idLogin}`, {
+        await fetch(`http://192.168.6.12:5000/login/${idLogin}`, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
@@ -112,7 +112,7 @@ const Home: React.FC<props> = ({ navigation }) => {
     // ------------------------
 
     const getProducts = async () => {
-        const response = await fetch("http://192.168.27.12:5000/product");
+        const response = await fetch("http://192.168.6.12:5000/product");
         const data = await response.json();
         setProducts(data);
         // console.log(data);
@@ -137,7 +137,7 @@ const Home: React.FC<props> = ({ navigation }) => {
     };
 
     const createTransaksi = async () => {
-        const response = await fetch("http://192.168.27.12:5000/transaksi", {
+        const response = await fetch("http://192.168.6.12:5000/transaksi", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -151,7 +151,7 @@ const Home: React.FC<props> = ({ navigation }) => {
     };
 
     const getTransaksi = async () => {
-        const response = await fetch("http://192.168.27.12:5000/transaksi");
+        const response = await fetch("http://192.168.6.12:5000/transaksi");
         const transaksiS = await response.json();
         // console.log(transaksiS.response);
         setDataTransaksi(transaksiS.response);

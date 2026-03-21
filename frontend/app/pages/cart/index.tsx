@@ -90,7 +90,7 @@ const Cart: React.FC<props> = ({ navigation }) => {
 
     // get product -----------------------
     const getProducts = async () => {
-        const response = await fetch("http://192.168.27.12:5000/product");
+        const response = await fetch("http://192.168.6.12:5000/product");
         const data = await response.json();
         setProducts(data);
     };
@@ -103,7 +103,7 @@ const Cart: React.FC<props> = ({ navigation }) => {
 
     // Get Data Login --------------------------
     const getUserId = async () => {
-        const response = await fetch("http://192.168.27.12:5000/login");
+        const response = await fetch("http://192.168.6.12:5000/login");
         const data = await response.json();
         setIdLogin(Object.values(data)[0]?.id);
         setId(Object.values(data)[0]?.userId);
@@ -114,7 +114,7 @@ const Cart: React.FC<props> = ({ navigation }) => {
     }, []);
 
     const getAkunLoggin = async () => {
-        const response = await fetch(`http://192.168.27.12:5000/user/${id}`);
+        const response = await fetch(`http://192.168.6.12:5000/user/${id}`);
         const user = await response.json();
         // console.log("login",user);
         if (user != null) {
@@ -127,7 +127,7 @@ const Cart: React.FC<props> = ({ navigation }) => {
     };
 
     const logOut = async () => {
-        await fetch(`http://192.168.27.12:5000/login/${idLogin}`, {
+        await fetch(`http://192.168.6.12:5000/login/${idLogin}`, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
@@ -142,7 +142,7 @@ const Cart: React.FC<props> = ({ navigation }) => {
 
     useEffect(() => {
         const getTransaksi = async () => {
-            const response = await fetch("http://192.168.27.12:5000/transaksi");
+            const response = await fetch("http://192.168.6.12:5000/transaksi");
             const transaksiS = await response.json();
             setDataTransaksi(transaksiS.response);
             setLoading(false);
@@ -211,7 +211,7 @@ const Cart: React.FC<props> = ({ navigation }) => {
 
     // Handle delete cart ---------------------
     const handleDeleteCart = async (cartId: number) => {
-        await fetch(`http://192.168.27.12:5000/cart/${cartId}`, {
+        await fetch(`http://192.168.6.12:5000/cart/${cartId}`, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
@@ -290,7 +290,7 @@ const Cart: React.FC<props> = ({ navigation }) => {
         if ((dataShow.length > 0 && imgSend?.length > 0) || cash > 0) {
             try {
                 dataShow.forEach(async (item: any) => {
-                    await fetch(`http://192.168.27.12:5000/cart/${item.id}`, {
+                    await fetch(`http://192.168.6.12:5000/cart/${item.id}`, {
                         method: "PATCH",
                         headers: {
                             "Content-Type": "application/json",
@@ -302,7 +302,7 @@ const Cart: React.FC<props> = ({ navigation }) => {
                 });
 
                 await fetch(
-                    `http://192.168.27.12:5000/transaksi/${idTransaksi}`,
+                    `http://192.168.6.12:5000/transaksi/${idTransaksi}`,
                     {
                         method: "PATCH",
                         headers: {
@@ -487,11 +487,7 @@ const Cart: React.FC<props> = ({ navigation }) => {
                 </TouchableOpacity>
 
                 {image?.length > 0 ? (
-                    <Image
-                        resizeMode="cover"
-                        style={styles.img}
-                        src={image}
-                    />
+                    <Image resizeMode="cover" style={styles.img} src={image} />
                 ) : (
                     ""
                 )}
